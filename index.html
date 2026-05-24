@@ -157,6 +157,82 @@
     color: var(--muted);
     font-size: 12px;
     letter-spacing: 1px;
+    flex: 1;
+    margin-left: 8px;
+  }
+  .sidebar h2 .new-folder-btn {
+    background: var(--accent);
+    color: var(--ink);
+    border: none;
+    padding: 5px 11px;
+    border-radius: 4px;
+    font-size: 12px;
+    font-family: inherit;
+    font-weight: bold;
+    cursor: pointer;
+    letter-spacing: 1px;
+    transition: background 0.15s;
+  }
+  .sidebar h2 .new-folder-btn:hover { background: var(--accent-hover); }
+  .folder-chips {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+    padding: 8px 16px 10px;
+    border-bottom: 1px solid var(--panel-border);
+  }
+  .folder-chip {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    background: var(--bg);
+    color: #d8d2c4;
+    border: 1px solid var(--panel-border);
+    border-radius: 14px;
+    padding: 5px 12px;
+    font-family: inherit;
+    font-size: 13px;
+    cursor: pointer;
+    transition: all 0.15s;
+    max-width: 100%;
+  }
+  .folder-chip:hover { border-color: var(--accent); }
+  .folder-chip.active {
+    background: var(--accent);
+    color: var(--ink);
+    border-color: var(--accent);
+    font-weight: bold;
+  }
+  .folder-chip .name {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    max-width: 110px;
+  }
+  .folder-chip .count {
+    font-size: 11px;
+    opacity: 0.7;
+  }
+  .folder-chip .del {
+    background: none;
+    border: none;
+    color: inherit;
+    cursor: pointer;
+    font-size: 14px;
+    line-height: 1;
+    padding: 0 0 0 2px;
+    opacity: 0;
+    transition: opacity 0.15s;
+  }
+  .folder-chip:hover .del { opacity: 0.7; }
+  .folder-chip .del:hover { opacity: 1; }
+  .folder-chip.new-btn {
+    background: transparent;
+    border-style: dashed;
+    color: var(--accent);
+  }
+  .folder-chip.new-btn:hover {
+    background: rgba(201, 169, 97, 0.1);
   }
   .recent-list {
     max-height: 38vh;
@@ -197,20 +273,83 @@
     color: var(--muted);
     margin-top: 2px;
   }
-  .recent-item .del {
+  .recent-item .actions {
+    display: flex;
+    align-items: center;
+    gap: 2px;
+    opacity: 0;
+    transition: opacity 0.15s;
+  }
+  .recent-item:hover .actions { opacity: 1; }
+  .recent-item .icon-btn {
     background: none;
     border: none;
     color: var(--muted);
     cursor: pointer;
-    font-size: 20px;
+    font-size: 16px;
     line-height: 1;
-    padding: 2px 8px;
+    padding: 4px 7px;
     border-radius: 3px;
-    opacity: 0;
-    transition: opacity 0.15s;
+    font-family: inherit;
   }
-  .recent-item:hover .del { opacity: 1; }
-  .recent-item .del:hover { background: var(--danger); color: white; }
+  .recent-item .icon-btn:hover { background: rgba(201, 169, 97, 0.15); color: var(--accent); }
+  .recent-item .icon-btn.del:hover { background: var(--danger); color: white; }
+  .recent-item .folder-tag {
+    display: inline-block;
+    font-size: 11px;
+    color: var(--accent);
+    background: rgba(201, 169, 97, 0.12);
+    border-radius: 8px;
+    padding: 2px 7px;
+    margin-left: 8px;
+    vertical-align: middle;
+  }
+
+  /* Floating "move to folder" menu */
+  .move-menu {
+    position: fixed;
+    z-index: 1100;
+    background: #1f1d18;
+    border: 1px solid var(--accent);
+    border-radius: 8px;
+    box-shadow: 0 8px 30px rgba(0,0,0,0.5);
+    padding: 6px 0;
+    min-width: 200px;
+    max-width: 280px;
+    display: none;
+    max-height: 300px;
+    overflow-y: auto;
+    font-size: 14px;
+  }
+  .move-menu.show { display: block; }
+  .move-menu-header {
+    padding: 6px 14px 8px;
+    color: var(--muted);
+    font-size: 12px;
+    text-transform: uppercase;
+    letter-spacing: 1.5px;
+    border-bottom: 1px solid var(--panel-border);
+    margin-bottom: 4px;
+  }
+  .move-menu-item {
+    padding: 8px 14px;
+    cursor: pointer;
+    color: #d8d2c4;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 8px;
+  }
+  .move-menu-item:hover { background: rgba(201, 169, 97, 0.12); color: var(--accent); }
+  .move-menu-item.current { color: var(--accent); font-weight: bold; }
+  .move-menu-item.divider {
+    border-top: 1px solid var(--panel-border);
+    padding-top: 8px;
+    margin-top: 4px;
+    color: var(--accent);
+    font-style: italic;
+  }
+  .move-menu-item.divider:hover { background: rgba(201, 169, 97, 0.15); }
   .bookmark-list {
     flex: 1;
     overflow-y: auto;
@@ -529,7 +668,7 @@
 <div class="toolbar">
   <h1>BIBLIO</h1>
   <label class="file-label" for="fileInput">Mở PDF…</label>
-  <input type="file" id="fileInput" accept="application/pdf">
+  <input type="file" id="fileInput" accept="application/pdf" multiple>
 
   <button class="btn" id="prevBtn" disabled>‹ Trước</button>
   <span class="page-info">
@@ -555,7 +694,12 @@
 
 <div class="main">
   <aside class="sidebar">
-    <h2>Sách gần đây <span class="count" id="recentCount"></span></h2>
+    <h2>
+      <span>Sách gần đây</span>
+      <span class="count" id="recentCount"></span>
+      <button class="new-folder-btn" id="newFolderBtn" title="Tạo thư mục mới">+ Thư mục</button>
+    </h2>
+    <div class="folder-chips" id="folderChips"></div>
     <div class="recent-list" id="recentList">
       <div class="bookmark-empty">Chưa có sách nào được lưu.</div>
     </div>
@@ -574,7 +718,8 @@
     <div class="empty-state" id="emptyState">
       <div class="icon">📖</div>
       <h2>Sách của bạn đang chờ</h2>
-      <p>Kéo thả file PDF vào đây, hoặc bấm <b>Mở PDF</b> ở trên.</p>
+      <p>Kéo thả một hoặc nhiều file PDF vào đây, hoặc bấm <b>Mở PDF</b> ở trên.</p>
+      <p>Sách được lưu trong trình duyệt — bạn có thể sắp xếp vào các thư mục ở thanh bên trái.</p>
       <p>Bôi đen đoạn tiếng Anh để nhận bản dịch tiếng Việt ngay tại chỗ.</p>
       <div class="hint">
         <kbd>←</kbd> <kbd>→</kbd> lật trang &nbsp;·&nbsp;
@@ -595,6 +740,9 @@
     <button class="nav-arrow next" id="navNext" style="display:none">›</button>
   </div>
 </div>
+
+<!-- Floating menu to move a PDF into a folder -->
+<div class="move-menu" id="moveMenu"></div>
 
 <!-- Floating translate trigger + result popup -->
 <button class="translate-trigger" id="translateTrigger">🌐 Dịch sang Việt</button>
@@ -620,7 +768,10 @@
     fitMode: true,
     rendering: false,
     renderToken: 0,
+    // null = "Tất cả", '__root__' = chưa phân loại, hoặc folder.id
+    folderFilter: localStorage.getItem('pdfreader.folderFilter') || null,
   };
+  if (state.folderFilter === 'null') state.folderFilter = null;
 
   const $ = id => document.getElementById(id);
   const els = {
@@ -637,6 +788,9 @@
     zoomLabel: $('zoomLabel'),
     recentList: $('recentList'),
     recentCount: $('recentCount'),
+    folderChips: $('folderChips'),
+    newFolderBtn: $('newFolderBtn'),
+    moveMenu: $('moveMenu'),
     bookmarkList: $('bookmarkList'),
     exportBtn: $('exportBtn'),
     importBtn: $('importBtn'),
@@ -660,7 +814,7 @@
 
   // ============ IndexedDB ============
   const DB_NAME = 'pdfreader-db';
-  const DB_VERSION = 1;
+  const DB_VERSION = 2; // v2 thêm store 'folders'
   let _dbPromise = null;
 
   function openDB() {
@@ -674,6 +828,9 @@
         }
         if (!db.objectStoreNames.contains('meta')) {
           db.createObjectStore('meta', { keyPath: 'key' });
+        }
+        if (!db.objectStoreNames.contains('folders')) {
+          db.createObjectStore('folders', { keyPath: 'id' });
         }
       };
       req.onsuccess = e => resolve(e.target.result);
@@ -719,15 +876,59 @@
     });
   }
 
-  async function savePDFRecord(fileKey, fileName, arrayBuf) {
+  async function savePDFRecord(fileKey, fileName, arrayBuf, folderId = null) {
+    // Nếu file đã tồn tại, giữ folderId/bookmarks cũ — chỉ refresh dữ liệu
+    const existing = await idbGet('pdfs', fileKey);
     await idbPut('pdfs', {
       fileKey, fileName,
       data: arrayBuf,
       lastOpened: Date.now(),
-      lastPage: 1,
+      lastPage: existing?.lastPage || 1,
+      folderId: existing?.folderId ?? folderId,
       size: arrayBuf.byteLength,
     });
-    await idbPut('meta', { key: 'lastOpened', value: fileKey });
+  }
+
+  // ============ Folders ============
+  async function createFolder(name) {
+    const folder = {
+      id: 'f_' + Date.now().toString(36) + '_' + Math.random().toString(36).slice(2, 8),
+      name: name.trim(),
+      createdAt: Date.now(),
+    };
+    await idbPut('folders', folder);
+    return folder;
+  }
+  async function listFolders() {
+    const all = await idbGetAll('folders');
+    all.sort((a, b) => (a.createdAt || 0) - (b.createdAt || 0));
+    return all;
+  }
+  async function renameFolder(id, newName) {
+    const f = await idbGet('folders', id);
+    if (!f) return;
+    f.name = newName.trim();
+    await idbPut('folders', f);
+  }
+  async function deleteFolder(id, alsoDeletePDFs = false) {
+    const all = await idbGetAll('pdfs');
+    for (const p of all) {
+      if (p.folderId === id) {
+        if (alsoDeletePDFs) {
+          await idbDelete('pdfs', p.fileKey);
+        } else {
+          p.folderId = null;
+          await idbPut('pdfs', p);
+        }
+      }
+    }
+    await idbDelete('folders', id);
+  }
+  async function setPDFFolder(fileKey, folderId) {
+    const rec = await idbGet('pdfs', fileKey);
+    if (!rec) return;
+    rec.folderId = folderId;
+    await idbPut('pdfs', rec);
   }
   async function updateLastPage(fileKey, page) {
     const rec = await idbGet('pdfs', fileKey);
@@ -812,8 +1013,13 @@
 
     // Persist (only if loaded from a fresh file; for restored we just update lastOpened)
     if (!isFromStorage) {
-      try { await savePDFRecord(state.fileKey, state.fileName, arrayBuf); }
-      catch (err) { console.warn('Không lưu được PDF vào IndexedDB:', err); }
+      try {
+        // Khi đang lọc theo một thư mục thì xếp file mới vào thư mục đó
+        const folderId = (state.folderFilter && state.folderFilter !== '__root__')
+          ? state.folderFilter : null;
+        await savePDFRecord(state.fileKey, state.fileName, arrayBuf, folderId);
+        await idbPut('meta', { key: 'lastOpened', value: state.fileKey });
+      } catch (err) { console.warn('Không lưu được PDF vào IndexedDB:', err); }
     } else {
       try { await updateLastPage(state.fileKey, state.currentPage); } catch {}
     }
@@ -888,27 +1094,54 @@
     renderRecentList();
   }
 
-  function renderRecentList() {
-    listPDFRecords().then(records => {
-      els.recentCount.textContent = records.length ? `(${records.length})` : '';
-      if (!records.length) {
-        els.recentList.innerHTML = '<div class="bookmark-empty">Chưa có sách nào được lưu.</div>';
+  async function renderRecentList() {
+    try {
+      const [records, folders] = await Promise.all([listPDFRecords(), listFolders()]);
+      const folderMap = new Map(folders.map(f => [f.id, f]));
+
+      // Áp dụng bộ lọc theo thư mục
+      const filtered = records.filter(r => {
+        if (state.folderFilter === null) return true; // Tất cả
+        if (state.folderFilter === '__root__') return !r.folderId;
+        return r.folderId === state.folderFilter;
+      });
+
+      els.recentCount.textContent = records.length ? `(${filtered.length}/${records.length})` : '';
+      renderFolderChips(records, folders);
+
+      if (!filtered.length) {
+        const msg = records.length
+          ? 'Thư mục này chưa có sách nào.'
+          : 'Chưa có sách nào được lưu.';
+        els.recentList.innerHTML = `<div class="bookmark-empty">${msg}</div>`;
         return;
       }
       els.recentList.innerHTML = '';
-      records.forEach(rec => {
+      filtered.forEach(rec => {
         const item = document.createElement('div');
         item.className = 'recent-item' + (state.fileKey === rec.fileKey ? ' active' : '');
         const sizeMB = (rec.size / (1024 * 1024)).toFixed(1);
         const niceName = rec.fileName.replace(/\.pdf$/i, '');
+        const folderName = rec.folderId && folderMap.get(rec.folderId)?.name;
         item.innerHTML = `
           <div class="info">
-            <div class="title" title="${escapeHtml(rec.fileName)}">${escapeHtml(niceName)}</div>
+            <div class="title" title="${escapeHtml(rec.fileName)}">
+              ${escapeHtml(niceName)}
+              ${folderName && state.folderFilter === null
+                ? `<span class="folder-tag">${escapeHtml(folderName)}</span>` : ''}
+            </div>
             <div class="meta">Trang ${rec.lastPage || 1} · ${sizeMB} MB · ${timeAgo(rec.lastOpened)}</div>
           </div>
-          <button class="del" title="Xoá khỏi thư viện">×</button>
+          <div class="actions">
+            <button class="icon-btn move" title="Chuyển sang thư mục…">📁</button>
+            <button class="icon-btn del" title="Xoá khỏi thư viện">×</button>
+          </div>
         `;
         item.querySelector('.info').addEventListener('click', () => openStoredPDF(rec.fileKey));
+        item.querySelector('.move').addEventListener('click', e => {
+          e.stopPropagation();
+          openMoveMenu(e.currentTarget, rec);
+        });
         item.querySelector('.del').addEventListener('click', e => {
           e.stopPropagation();
           if (confirm(`Xoá "${rec.fileName}" khỏi thư viện?\n(Bookmark sẽ vẫn được giữ.)`)) {
@@ -917,7 +1150,179 @@
         });
         els.recentList.appendChild(item);
       });
-    }).catch(err => console.warn('renderRecentList:', err));
+    } catch (err) {
+      console.warn('renderRecentList:', err);
+    }
+  }
+
+  // ============ Folder chips ============
+  function renderFolderChips(records, folders) {
+    const counts = { __all__: records.length, __root__: 0 };
+    records.forEach(r => {
+      if (!r.folderId) counts.__root__++;
+      else counts[r.folderId] = (counts[r.folderId] || 0) + 1;
+    });
+
+    const chip = (id, name, count, isNew=false) => {
+      const active = state.folderFilter === id || (id === null && state.folderFilter === null);
+      const safeName = escapeHtml(name);
+      const countHtml = count != null ? `<span class="count">${count}</span>` : '';
+      const delHtml = (id && id !== '__root__' && !isNew)
+        ? `<button class="del" title="Xoá thư mục">×</button>` : '';
+      return `<button class="folder-chip ${active ? 'active' : ''} ${isNew ? 'new-btn' : ''}"
+                data-folder-id="${id == null ? '' : id}">
+        <span class="name">${safeName}</span>${countHtml}${delHtml}
+      </button>`;
+    };
+
+    const parts = [];
+    parts.push(chip(null, 'Tất cả', counts.__all__));
+    parts.push(chip('__root__', 'Chưa phân loại', counts.__root__));
+    folders.forEach(f => parts.push(chip(f.id, f.name, counts[f.id] || 0)));
+
+    els.folderChips.innerHTML = parts.join('');
+
+    // Wire up handlers
+    els.folderChips.querySelectorAll('.folder-chip').forEach(btn => {
+      const fid = btn.dataset.folderId;
+      btn.addEventListener('click', e => {
+        if (e.target.classList.contains('del')) {
+          e.stopPropagation();
+          handleDeleteFolder(fid);
+          return;
+        }
+        // Switch filter
+        const newFilter = fid === '' ? null : fid;
+        state.folderFilter = newFilter;
+        if (newFilter === null) localStorage.removeItem('pdfreader.folderFilter');
+        else localStorage.setItem('pdfreader.folderFilter', newFilter);
+        renderRecentList();
+      });
+    });
+  }
+
+  // Đảm bảo chip lọc thư mục luôn hiển thị (kể cả khi IDB lỗi/chưa có dữ liệu)
+  async function ensureFolderChips() {
+    try {
+      const [records, folders] = await Promise.all([listPDFRecords(), listFolders()]);
+      renderFolderChips(records, folders);
+    } catch (err) {
+      console.warn('ensureFolderChips error:', err);
+      renderFolderChips([], []);
+    }
+  }
+
+  async function handleCreateFolder() {
+    const name = prompt('Tên thư mục mới:');
+    if (!name || !name.trim()) return;
+    const folder = await createFolder(name.trim());
+    // Tự chuyển sang thư mục vừa tạo
+    state.folderFilter = folder.id;
+    localStorage.setItem('pdfreader.folderFilter', folder.id);
+    renderRecentList();
+  }
+
+  async function handleDeleteFolder(folderId) {
+    const folders = await listFolders();
+    const f = folders.find(x => x.id === folderId);
+    if (!f) return;
+    const records = await listPDFRecords();
+    const inside = records.filter(r => r.folderId === folderId).length;
+    let alsoDeletePDFs = false;
+    if (inside > 0) {
+      const choice = confirm(
+        `Thư mục "${f.name}" chứa ${inside} sách.\n\n` +
+        `Bấm OK để chuyển các sách đó về "Chưa phân loại" và xoá thư mục.\n` +
+        `Bấm Cancel để huỷ.`
+      );
+      if (!choice) return;
+    } else {
+      if (!confirm(`Xoá thư mục "${f.name}"?`)) return;
+    }
+    await deleteFolder(folderId, alsoDeletePDFs);
+    if (state.folderFilter === folderId) {
+      state.folderFilter = null;
+      localStorage.removeItem('pdfreader.folderFilter');
+    }
+    renderRecentList();
+  }
+
+  // ============ Move-to-folder menu ============
+  async function openMoveMenu(anchorEl, rec) {
+    const folders = await listFolders();
+    const items = [];
+    items.push({ id: null, name: 'Chưa phân loại', current: !rec.folderId });
+    folders.forEach(f => items.push({ id: f.id, name: f.name, current: rec.folderId === f.id }));
+
+    let html = `<div class="move-menu-header">Chuyển "${escapeHtml(
+      rec.fileName.replace(/\.pdf$/i,'').slice(0, 30)
+    )}" tới…</div>`;
+    items.forEach(it => {
+      html += `<div class="move-menu-item ${it.current ? 'current' : ''}" data-id="${it.id == null ? '' : it.id}">
+        <span>${escapeHtml(it.name)}</span>${it.current ? '<span>✓</span>' : ''}
+      </div>`;
+    });
+    html += `<div class="move-menu-item divider" data-action="new">+ Tạo thư mục mới…</div>`;
+
+    els.moveMenu.innerHTML = html;
+    els.moveMenu.classList.add('show');
+
+    // Position near anchor
+    const rect = anchorEl.getBoundingClientRect();
+    const mw = els.moveMenu.offsetWidth;
+    const mh = els.moveMenu.offsetHeight;
+    let left = rect.right - mw;
+    let top = rect.bottom + 6;
+    if (top + mh > window.innerHeight - 10) top = rect.top - mh - 6;
+    if (left < 10) left = 10;
+    els.moveMenu.style.left = left + 'px';
+    els.moveMenu.style.top = top + 'px';
+
+    els.moveMenu.querySelectorAll('.move-menu-item').forEach(el => {
+      el.addEventListener('click', async e => {
+        e.stopPropagation();
+        const action = el.dataset.action;
+        if (action === 'new') {
+          const name = prompt('Tên thư mục mới:');
+          if (!name || !name.trim()) return;
+          const folder = await createFolder(name.trim());
+          await setPDFFolder(rec.fileKey, folder.id);
+        } else {
+          const id = el.dataset.id || null;
+          await setPDFFolder(rec.fileKey, id);
+        }
+        closeMoveMenu();
+        renderRecentList();
+      });
+    });
+  }
+  function closeMoveMenu() { els.moveMenu.classList.remove('show'); }
+  document.addEventListener('mousedown', e => {
+    if (!els.moveMenu.contains(e.target)) closeMoveMenu();
+  });
+
+  // ============ Multi-file upload ============
+  async function loadMultiplePDFs(files) {
+    const valid = files.filter(f => f.type === 'application/pdf' || /\.pdf$/i.test(f.name));
+    if (!valid.length) return;
+    // Open the first one in the viewer, save the rest silently
+    await loadPDF(valid[0]);
+    for (let i = 1; i < valid.length; i++) {
+      try {
+        const f = valid[i];
+        const key = await computeFileKey(f);
+        const buf = await f.arrayBuffer();
+        const folderId = (state.folderFilter && state.folderFilter !== '__root__')
+          ? state.folderFilter : null;
+        await savePDFRecord(key, f.name, buf, folderId);
+      } catch (err) {
+        console.warn('Skip file', valid[i].name, err);
+      }
+    }
+    if (valid.length > 1) {
+      // Update UI to show the rest
+      renderRecentList();
+    }
   }
 
   function timeAgo(ts) {
@@ -1306,7 +1711,10 @@
 
   // ============ Event wiring ============
   els.fileInput.addEventListener('change', e => {
-    if (e.target.files[0]) loadPDF(e.target.files[0]);
+    const files = Array.from(e.target.files || []);
+    if (files.length) loadMultiplePDFs(files);
+    // Reset để cùng một file có thể chọn lại được
+    e.target.value = '';
   });
 
   els.prevBtn.addEventListener('click', () => goTo(state.currentPage - 1));
@@ -1335,6 +1743,8 @@
     state.fitMode = true;
     renderPage(state.currentPage, false);
   });
+
+  els.newFolderBtn.addEventListener('click', handleCreateFolder);
 
   els.exportBtn.addEventListener('click', exportBookmarks);
   els.importBtn.addEventListener('click', () => els.importInput.click());
@@ -1417,8 +1827,8 @@
   });
   document.addEventListener('drop', e => {
     e.preventDefault();
-    const file = e.dataTransfer.files[0];
-    if (file && file.type === 'application/pdf') loadPDF(file);
+    const files = Array.from(e.dataTransfer.files || []);
+    if (files.length) loadMultiplePDFs(files);
   });
 
   // Resize -> refit
@@ -1430,6 +1840,7 @@
   });
 
   renderBookmarkList();
+  ensureFolderChips();
   renderRecentList();
   // Tự khôi phục sách + trang đang đọc lần trước
   restoreLastSession();
